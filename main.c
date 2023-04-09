@@ -8,7 +8,7 @@
 #include "misc.h"
 #include "print.h"
 #include "file.h"
-#include "typedefs.h"
+#include "typedefs.c"
 #include "tree.h"
 #include "getopt.h"
 #include "globals.h"

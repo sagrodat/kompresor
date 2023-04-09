@@ -1,5 +1,5 @@
 #pragma once
-#include "typedefs.h"
+#include "typedefs.c"
 #include <stdio.h>
 #include <stdlib.h>
 int get_unique_chars(int count[], int n);

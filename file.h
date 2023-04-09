@@ -1,7 +1,7 @@
 #pragma once
 #include <stdio.h>
 #include <stdlib.h>
-#include "typedefs.h"
+#include "typedefs.c"
 
 unsigned char read_byte_from_file(FILE* fp);
 
