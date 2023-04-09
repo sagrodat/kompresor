@@ -711,10 +711,9 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 
 		for (i = 0; i < chars_to_read; i++)
 		{
-			print_progress("Czytanie kodow huffmana : ", i, chars_to_read - 1);
 			ch = read_byte_from_file(fp);
 			//zmiana znaku ch na binarny zapis
-			char* ch_bin = dec_to_bin_string((int)ch, get_bin_len((unsigned char)ch));
+			char* ch_bin = dec_to_bin_string((unsigned char)ch, get_bin_len((unsigned char)ch));
 			//uzupelnianie zerami z lewej
 			ch_bin = add_zeros_to_left(ch_bin, get_bin_len((unsigned char)ch));
 			//printf("\n%d - ", (unsigned char)ch);
@@ -738,7 +737,9 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 
 				if (tmp.left != -1) // jezeli wezel na ktorym aktualnie znajdujemy sie w drzewie ma dzieci
 				{
+				//	printf("bin przed : %d\n", bin_ind);
 					move_to_child(tree, &tmp, ch_bin, &bin_ind, &tmp_ind);
+				//	printf("bin po : %d\n", bin_ind);
 				}
 				//jesli przeszlismy do wezla bez dziecka (bedacego lisciem) to wypiszmy znak
 				if (tmp.left == -1)
@@ -939,7 +940,6 @@ void decompress(FILE* in, FILE* out)
 	{
 		printf("node_id %d, left %d, right %d, char_id %c\n", tree[i].node_id, tree[i].left, tree[i].right, tree[i].char_id);
 	}*/
-
 	//czytanie kodu!!! (pierwszy znak wczytujemy tutaj przed petla (nie wiem czemu))
 	read_code(in, out, tree, tree_size, tail, control_number, DECOMPRESSION_MODE);
 

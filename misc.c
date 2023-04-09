@@ -102,7 +102,7 @@ int get_bin_len(int x)
 	return len;
 }
 
-char* dec_to_bin_string(int x, int n)
+char* dec_to_bin_string(unsigned char x, int n)
 {
 
 	char* binary = malloc(sizeof(char) * n);

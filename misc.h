@@ -20,7 +20,7 @@ int get_bin_len(int x);
 
 char* add_zeros_to_left(char* arr, int n);
 
-char* dec_to_bin_string(int x, int n);
+char* dec_to_bin_string(unsigned char x, int n);
 
 int get_total_code_len(node_t* nodes, keyy_t* dict, int* count, int unique_chars);
 

@@ -48,6 +48,7 @@ void move_occuring_nodes_left(node_t** nodes, int* right, int unique_chars, int 
 void move_to_child(branch_t* tree, branch_t* tmp, char* ch_bin, int* bin_ind, int* tmp_ind)
 {
 	//printf("parametry left %d, right %d\n", tmp->left, tmp->right);
+	//printf("znak (0,1) : %c\n", ch_bin[*bin_ind]);
 	if (ch_bin[*bin_ind] == '0') // idziemy do lewego dziecka
 	{
 		(*tmp) = tree[(*tmp).left];
