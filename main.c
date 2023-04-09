@@ -306,11 +306,11 @@ void save_code(FILE* in, FILE* out, key_t* dict, int fsize, int unique_chars, in
 
 					//przesun w lewo, zapisz lewy bajt, wyzeruj, przesun w prawo
 					u.buf = u.buf << (16 - counter);
-					write_byte_to_file(out, u.B);
+					write_byte_to_file(out, u.D.B);
 					//printf("zapisuje %d - ", (u.B));
 					//print_bin(dec_to_bin_string(u.B, get_bin_len(u.B)), get_bin_len(u.B));
 
-					u.B = 0;
+					u.D.B = 0;
 					u.buf = u.buf >> (16 - counter);
 					counter = 0;
 
@@ -322,7 +322,7 @@ void save_code(FILE* in, FILE* out, key_t* dict, int fsize, int unique_chars, in
 		if (counter != 0)
 		{
 			//zapisz resztke 
-			write_byte_to_file(out, u.A);
+			write_byte_to_file(out, u.D.A);
 		}
 
 		//printf("zapisuje %d\n", (u.A));
@@ -399,9 +399,9 @@ void save_code(FILE* in, FILE* out, key_t* dict, int fsize, int unique_chars, in
 
 						//	printf("\n");
 						v.buf = v.buf << (16 - counter);
-						write_byte_to_file(out, v.B);
+						write_byte_to_file(out, v.D.B);
 						//printf("saved %d\n", v.B);
-						v.B = 0;
+						v.D.B = 0;
 						v.buf = v.buf >> (16 - counter);
 						counter = 0;
 
@@ -416,7 +416,7 @@ void save_code(FILE* in, FILE* out, key_t* dict, int fsize, int unique_chars, in
 		if (counter != 0)
 		{
 			//printf("ogonek jaki zostal : %d\n", v.A);
-			write_byte_to_file(out , v.A);
+			write_byte_to_file(out , v.D.A);
 		}
 		//printf("kontrol %d\n", control_number);
 		write_byte_to_file(out, control_number);
@@ -448,11 +448,11 @@ void save_code(FILE* in, FILE* out, key_t* dict, int fsize, int unique_chars, in
 			else
 			{
 				//key.buf = read_two_bytes(in);
-				key.B = fgetc(in);
-				key.A = fgetc(in);
-				printf("Wczytano %d %d\n", (unsigned char)key.B, (unsigned char)key.A);
-				control_number = control_number ^ key.A;
-				control_number = control_number ^ key.B;
+				key.D.B = fgetc(in);
+				key.D.B = fgetc(in);
+				printf("Wczytano %d %d\n", (unsigned char)key.D.B, (unsigned char)key.D.A);
+				control_number = control_number ^ key.D.A;
+				control_number = control_number ^ key.D.B;
 			}
 
 			//printf("Znak dla ktorego szukamy %c\n", ch);
@@ -483,12 +483,12 @@ void save_code(FILE* in, FILE* out, key_t* dict, int fsize, int unique_chars, in
 
 					//przesun w lewo, zapisz lewy bajt, wyzeruj, przesun w prawo
 					u.buf = u.buf << (16 - counter);
-					write_byte_to_file(out, u.B);
+					write_byte_to_file(out, u.D.B);
 
 					//printf("zapisuje %u - ", (unsigned int)(u.B));
 					//print_bin(dec_to_bin_string(u.B, get_bin_len(u.B)), get_bin_len(u.B));
 
-					u.B = 0;
+					u.D.B = 0;
 					u.buf = u.buf >> (16 - counter);
 					counter = 0;
 
@@ -501,7 +501,7 @@ void save_code(FILE* in, FILE* out, key_t* dict, int fsize, int unique_chars, in
 		if (counter != 0)
 		{
 			//zapisz resztke 
-			write_byte_to_file(out, u.A);
+			write_byte_to_file(out, u.D.A);
 			//	printf("zapisuje %d - \n", (u.A));
 			//print_bin(dec_to_bin_string(u.A, get_bin_len(u.A)), get_bin_len(u.A));
 		}
@@ -756,8 +756,8 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 							u.buf += tmp.char_id;
 							//print_short_as_bits(u.buf, 16);
 							//printf("%c", u.A);
-							fwrite(&u.A, sizeof(char), sizeof(u.A), out);
-							control_number = control_number ^ u.A;
+							fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+							control_number = control_number ^ u.D.A;
 							//	printf("\ncontrol_nubmer : %d\n", control_number);
 							cnt++;
 						}
@@ -769,10 +769,10 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 							u.buf = u.buf << 4;
 							//print_short_as_bits(u.buf, 16);
 						 //   printf("%c", u.B);
-							fwrite(&u.B, sizeof(char), sizeof(u.B), out);
-							control_number = control_number ^ u.B;
+							fwrite(&u.D.B, sizeof(char), sizeof(u.D.B), out);
+							control_number = control_number ^ u.D.B;
 							///		printf("\ncontrol_nubmer : %d\n", control_number);
-							u.B = 0;
+							u.D.B = 0;
 							u.buf = u.buf >> 4;
 							//print_short_as_bits(u.buf, 16);
 							cnt++;
@@ -789,21 +789,21 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 								u.buf = u.buf << 4;
 								u.buf += tmp.char_id;
 								//	printf("%c", u.A);
-								fwrite(&u.A, sizeof(char), sizeof(u.A), out);
-								control_number = control_number ^ u.A;
+								fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+								control_number = control_number ^ u.D.A;
 							}
 							else
 							{
 								u.buf = u.buf << 12;
 								u.buf += tmp.char_id;
 								//	printf("%c", u.B);
-								fwrite(&u.B, sizeof(char), sizeof(u.B), out);
+								fwrite(&u.D.B, sizeof(char), sizeof(u.D.B), out);
 								//	printf("%c", u.A);
-								fwrite(&u.A, sizeof(char), sizeof(u.A), out);
+								fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
 
 
-								control_number = control_number ^ u.B;
-								control_number = control_number ^ u.A;
+								control_number = control_number ^ u.D.B;
+								control_number = control_number ^ u.D.A;
 							}
 
 							//print_short_as_bits(u.buf, 16);
@@ -821,12 +821,12 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 							u.buf += tmp.char_id;
 							//print_short_as_bits(u.buf, 16);
 							//printf("%c", u.B);
-							fwrite(&u.B, sizeof(char), sizeof(u.B), out);
-							control_number = control_number ^ u.B;
+							fwrite(&u.D.B, sizeof(char), sizeof(u.D.B), out);
+							control_number = control_number ^ u.D.B;
 							//	printf("\ncontrol_nubmer : %d\n", control_number);
 							//printf("%c", u.A);
-							fwrite(&u.A, sizeof(char), sizeof(u.A), out);
-							control_number = control_number ^ u.A;
+							fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+							control_number = control_number ^ u.D.A;
 							//	printf("\ncontrol_nubmer : %d\n", control_number);
 							u.buf = 0;
 							cnt++;
@@ -883,10 +883,10 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 					if (tmp.char_id > 255)
 					{
 						//printf("%c%c", u.B, u.A);
-						fwrite(&u.B, sizeof(char), sizeof(u.B), out);
-						fwrite(&u.A, sizeof(char), sizeof(u.A), out);
-						control_number = control_number ^ u.B;
-						control_number = control_number ^ u.A;
+						fwrite(&u.D.B, sizeof(char), sizeof(u.D.B), out);
+						fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+						control_number = control_number ^ u.D.B;
+						control_number = control_number ^ u.D.A;
 					}
 					else
 					{
@@ -896,15 +896,15 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 						//albo jest 8 bitowy znak na lisciu (gdy plik wejsciowy ma nieparzysta ilosc znakowy) 
 						if (i == chars_to_read - 1) // bo bedzie on zapisany w ostatnim znaku skompresowanego pliku
 						{
-							fwrite(&u.A, sizeof(char), sizeof(u.A), out);
-							control_number = control_number ^ u.A;
+							fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+							control_number = control_number ^ u.D.A;
 						}
 						else //albo lewy fragment shorta jest zerowy czyli znak na lisciu to NULL
 						{
-							fwrite(&u.B, sizeof(char), sizeof(u.B), out);
-							fwrite(&u.A, sizeof(char), sizeof(u.A), out);
-							control_number = control_number ^ u.B;
-							control_number = control_number ^ u.A;
+							fwrite(&u.D.B, sizeof(char), sizeof(u.D.B), out);
+							fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+							control_number = control_number ^ u.D.B;
+							control_number = control_number ^ u.D.A;
 						}
 					
 					}

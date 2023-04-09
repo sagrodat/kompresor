@@ -31,18 +31,18 @@ typedef struct {
 
 union data {
 	short buf;
-	struct D {
+	struct {
 		char A;
 		char B;
-	};
+	}D;
 };
 
 union big_data {
 	int buf;
-	struct E {
+	struct {
 		char A;
 		char B;
 		char C;
 		char D;
-	};
+	}E;
 };
