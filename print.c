@@ -39,7 +39,7 @@ void print_short_as_bits(short x, int bits)
 	print_bin_as_bits(code, get_bin_len(x), bits);
 }
 
-void print_key(key_t key, int max_code_len) // output : "char - code"
+void print_key(keyy_t key, int max_code_len) // output : "char - code"
 {
 	int i;
 	printf("%d - ", key.char_id);
@@ -80,7 +80,6 @@ void print_bin_as_bits(char* bin, int n, int bits)
 	}
 	printf("\n");
 }
-
 
 void print_nodes(node_t* nodes, int from, int to) // wypis kontrolny, ignorowac
 {

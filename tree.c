@@ -255,7 +255,7 @@ min_t mini1_all(node_t* nodes, int right)
 {
 	int i;
 	min_t min1;
-	min1.val = INT_MAX;
+	min1.val = TMP_MAX;
 
 	for (i = 0; i < right; i++)
 	{
@@ -272,7 +272,7 @@ min_t mini1_fatherless(node_t* nodes, int right) //funkcja znajdujaca index oraz
 {
 	int i;
 	min_t min1;
-	min1.val = INT_MAX;
+	min1.val = TMP_MAX;
 
 	for (i = 0; i < right; i++)
 	{
@@ -290,7 +290,7 @@ min_t mini2(node_t* nodes, int right, min_t min1) // funkcja znajdujaca index or
 	//min1.val to wartosc minimalna w calej tablicy
 	int i;
 	min_t min2;
-	min2.val = INT_MAX;
+	min2.val = TMP_MAX;
 
 	for (i = 0; i < right; i++)
 	{

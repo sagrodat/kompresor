@@ -9,7 +9,7 @@ void print_nodes(node_t* nodes, int from, int to);
 
 void print_node_info(node_t node);
 
-void print_key(key_t key, int max_code_len);
+void print_key(keyy_t key, int max_code_len);
 
 void print_bin(char* bin, int n);
 
