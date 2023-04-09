@@ -1,5 +1,8 @@
 #include "typedefs.h"
-
+#pragma once
+#define EIGHT_BIT 256
+#define TWELVE_BIT 4096
+#define SIXTEEN_BIT 65536
 typedef struct node_t {
 	short char_id; // znak badz ojciec
 	int sum; // ilosc wystapien w tekscie

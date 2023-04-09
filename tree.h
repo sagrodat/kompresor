@@ -1,5 +1,5 @@
 #pragma once
-#include "typedefs.h"
+#include "typedefs.c"
 #include <stdlib.h>
 #include <stdio.h>
 
