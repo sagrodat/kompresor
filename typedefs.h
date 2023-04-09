@@ -14,7 +14,7 @@ typedef struct {
 typedef struct {
 	short char_id;
 	char* code;
-}key_t;
+}keyy_t;
 
 //do odtwarzania drzewa przy dekompresji
 typedef struct {
