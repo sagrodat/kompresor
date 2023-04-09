@@ -428,6 +428,7 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 		int i;
 		char control_number = 0;
 		union data key;
+		key.buf = 0;
 		union data u;
 		u.buf = 0;
 
@@ -449,8 +450,8 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 			{
 				//key.buf = read_two_bytes(in);
 				key.D.B = fgetc(in);
-				key.D.B = fgetc(in);
-				printf("Wczytano %d %d\n", (unsigned char)key.D.B, (unsigned char)key.D.A);
+				key.D.A = fgetc(in);
+				//printf("Wczytano %d %d\n", (unsigned char)key.D.B, (unsigned char)key.D.A);
 				control_number = control_number ^ key.D.A;
 				control_number = control_number ^ key.D.B;
 			}
@@ -460,8 +461,8 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 
 			//znajdujemy kod odpowiadajacy znakowi
 			char* code = dict[(unsigned short)key.buf].code;
-			printf("key %d\n", (unsigned short)key.buf);
-			printf("code %s\n", dict[(unsigned short)key.buf].code);
+			//printf("key %d\n", (unsigned short)key.buf);
+			//printf("code %s\n", dict[(unsigned short)key.buf].code);
 			//print_bin_as_bits(code, strlen(code), 16);
 
 			//zamieniamy kod z stringa np "10101001" na jego wartosc dziesietna
