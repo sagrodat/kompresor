@@ -926,7 +926,7 @@ void decompress(FILE* in, FILE* out)
 	int fsize = get_file_size(out);
 	branch_t* tree = NULL;
 	int tree_size, tail;
-	unsigned  control_number;
+	unsigned char control_number;
 	int DECOMPRESSION_MODE;
 
 	tree = read_header(in, &tree_size, &tail, &control_number, &DECOMPRESSION_MODE); // zwraca juz gotowe odbudowane drzewo

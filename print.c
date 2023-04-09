@@ -1,6 +1,8 @@
 #include "print.h"
 #include "globals.h"
+#include "misc.h"
 #include <stdio.h>
+
 
 void print_progress(char msg[], double current, double max_val)
 {

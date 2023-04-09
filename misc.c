@@ -2,6 +2,7 @@
 #include "tree.h"
 #include "print.h"
 #include <string.h>
+#include <math.h>
 int get_unique_chars(int count[], int n) // funkcja zliczajaca ilosc unikalnych znakow wystepujacych w pliku wejsciowym
 {
 	int i;

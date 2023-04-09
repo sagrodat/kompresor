@@ -24,7 +24,7 @@ FILE* open_file(int argc, char** argv, int argv_num, char* flag)
 		if (argc < argv_num + 1)
 			printf("Nie podano nazwy pliku\n");
 		else
-			printf("Nie udalo sie otworzyc pliku % s\n", argv[argv_num]);
+			printf("Nie udalo sie otworzyc pliku %s\n", argv[argv_num]);
 
 		exit(0);
 	}
