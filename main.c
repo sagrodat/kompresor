@@ -105,10 +105,10 @@ int* count_occurences(FILE* fp, int fsize, int dict_size)
 	}*/
 	return count;
 }
-key_t* create_dict(node_t* nodes, int unique_chars, int MAX_VAL)
+keyy_t* create_dict(node_t* nodes, int unique_chars, int MAX_VAL)
 {
 	int i;
-	key_t* dict = malloc(sizeof * dict * MAX_VAL);
+	keyy_t* dict = malloc(sizeof * dict * MAX_VAL);
 	//znajdywanie wielkosci najdluzszego kodu aby ogolnei zarezerwowac mniejsza ilosc miejsca na kody
 	//sprawdzamy jak dlugi jest kod dla znaku ktory wystepuje najmniej razy, to bedzie max dlugosc kodu
 	// 
@@ -243,7 +243,7 @@ void save_header(FILE* fp, node_t* nodes, char tail, int fsize, int right, int C
 		}
 	}
 }
-void save_code(FILE* in, FILE* out, key_t* dict, int fsize, int unique_chars, int COMPRESSION_MODE)
+void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, int COMPRESSION_MODE)
 {
 	if (COMPRESSION_MODE == EIGHT_BIT)
 	{
@@ -547,7 +547,7 @@ void compress(FILE* in, FILE* out, int COMPRESSION_MODE, char* pass)
 
 	///////////////////////////////////     S£OWNIK     /////////////////////////////////////////
 
-	key_t* dict = NULL;
+	keyy_t* dict = NULL;
 	dict = create_dict(nodes, unique_chars, COMPRESSION_MODE);
 
 	///////////////////////////////////      ZAPISYWANIE SKOMPRESOWANEGO TEKSTU      /////////////////////////////////////
