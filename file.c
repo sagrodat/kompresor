@@ -104,11 +104,11 @@ void write_two_bytes_to_file(FILE* fp, short x)
 	u.buf = x;
 	if (protected)
 	{
-		xor_char_pass(&u.B, pass_var);
-		xor_char_pass(&u.A, pass_var);
+		xor_char_pass(&u.D.B, pass_var);
+		xor_char_pass(&u.D.A, pass_var);
 	}
-	fwrite(&u.B, sizeof(char), sizeof(u.B), fp);
-	fwrite(&u.A, sizeof(char), sizeof(u.A), fp);
+	fwrite(&u.D.B, sizeof(char), sizeof(u.D.B), fp);
+	fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), fp);
 }
 void write_three_bytes_to_file(FILE* fp, int x)
 {
@@ -116,14 +116,14 @@ void write_three_bytes_to_file(FILE* fp, int x)
 	u.buf = x;
 	if (protected)
 	{
-		xor_char_pass(&u.C, pass_var);
-		xor_char_pass(&u.B, pass_var);
-		xor_char_pass(&u.A, pass_var);
+		xor_char_pass(&u.E.C, pass_var);
+		xor_char_pass(&u.E.B, pass_var);
+		xor_char_pass(&u.E.A, pass_var);
 	}
 
-	fwrite(&u.C, sizeof(char), sizeof(u.C), fp);
-	fwrite(&u.B, sizeof(char), sizeof(u.B), fp);
-	fwrite(&u.A, sizeof(char), sizeof(u.A), fp);
+	fwrite(&u.E.C, sizeof(char), sizeof(u.E.C), fp);
+	fwrite(&u.E.B, sizeof(char), sizeof(u.E.B), fp);
+	fwrite(&u.E.A, sizeof(char), sizeof(u.E.A), fp);
 }
 
 
