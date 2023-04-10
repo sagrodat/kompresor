@@ -1033,6 +1033,9 @@ int main(int argc, char** argv)
 			printf("Kompresja %d bitowa\n", (int)log2f(EIGHT_BIT));
 		compress(in, out, EIGHT_BIT, pass);
 	}
+	fclose(in);
+	fclose(out);
+	free(pass);
 
 	return 0;
 }
