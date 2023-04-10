@@ -3,6 +3,33 @@
 #include "misc.h"
 #include <stdio.h>
 
+void print_help()
+{
+	printf("-------HELP-------\n");
+	printf("Program sluzy do kompresji.\n");
+	printf("Do podstawowego wywolania programu potrzebne jest podanie pliku wejsciowego i wyjsciowego.\n");
+	printf("Program rozpoznaje czy plik jest skompresowany.\n");
+	printf("> nie jest skompresowany - program kompresuje plik (domyslnie kompresja osmiobitowa)\n");
+	printf("> jest skompresowany - program dekompresuje plik\n");
+	printf("Jest mozliwosc wyboru poziomu kompresji.\n");
+	printf("Program posiada ponizsze funkcjonalnosci:\n");
+	printf("-e kompresja osmiobitowa\n");
+	printf("-t kompresja dwunastobitowa\n");
+	printf("-s kompresja szesnastobitowa\n");
+	printf("-p szyfrowanie; po wpisaniu flagi wpisujemy haslo\n");
+	printf("-i wyswietlanie dodatkowych informacji odnosnie przebiegu programu\n");
+	printf("-h, h, ?, -?, help, -help, --help instrukcja obslugi programu\n");
+	printf("FLAGA DOTYCZACA KOMPRESJI ZAWSZE POWINNA BYC PODAWANA JAKO OSTATNIA!\n");
+	printf("Przyklady uzycia :\n");
+	printf("(1)\n");
+	printf("in.txt out.txt -p haslo [kompresja 8 bitowa z haslem]\n");
+	printf("out.txt in.txt -i [dekompresja z wyswietleniem dodatkowych informacji]\n");
+	printf("(2)\n");
+	printf("photo.png photo_compressed.bin -i -t [kompresja 12 bitowa z wyswietleniem dodatkowych informacji]\n");
+
+	exit(0);
+}
+
 
 void print_progress(char msg[], double current, double max_val)
 {

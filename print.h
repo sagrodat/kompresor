@@ -13,6 +13,8 @@ void print_key(keyy_t key, int max_code_len);
 
 void print_bin(char* bin, int n);
 
+void print_help();
+
 void print_bin_as_bits(char* bin, int n, int bits);
 
 void print_short_as_bits(short x, int bits);

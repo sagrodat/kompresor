@@ -945,23 +945,12 @@ void decompress(FILE* in, FILE* out)
 
 }
 
-void print_help()
-{
-	printf("-------HELP-------\n");
-	printf("-e kompresja osmiobitowa\n");
-	printf("-t kompresja dwunastobitowa\n");
-	printf("-s kompresja szesnastobitowa\n");
-	printf("-p szyfrowanie\n");
-	printf("-h h -help help ? -?\n");
-	printf("-i help\n");
 
-	exit(0);
-}
 int main(int argc, char** argv)
 {
 
 
-	if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "h") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "help") || !strcmp(argv[1], "?") || !strcmp(argv[1], "-?"))
+	if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "h") || !strcmp(argv[1], "--help") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "help") || !strcmp(argv[1], "?") || !strcmp(argv[1], "-?"))
 	{
 		print_help();
 	}
