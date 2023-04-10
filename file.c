@@ -153,3 +153,12 @@ int get_file_size(FILE* fp)
 	fseek(fp, cur_pos, SEEK_SET);
 	return fsize;
 }
+
+void write_byte_to_file(FILE* fp, char x)
+{
+	if (protected)
+	{
+		x ^= pass_var;
+	}
+	fwrite(&x, sizeof(char), sizeof(x), fp);
+}

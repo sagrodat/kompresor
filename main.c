@@ -155,14 +155,7 @@ keyy_t* create_dict(node_t* nodes, int unique_chars, int MAX_VAL)
 	return dict;
 
 }
-void write_byte_to_file(FILE * fp, char x)
-{
-	if (protected)
-	{
-		x ^= pass_var;
-	}
-	fwrite(&x, sizeof(char), sizeof(x), fp);
-}
+
 void save_header(FILE* fp, node_t* nodes, char tail, int fsize, int right, int COMPRESSION_MODE)
 {
 	save_initials(fp);
@@ -514,16 +507,6 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 
 
 }
-unsigned char get_pass_var(char* pass)
-{
-	unsigned char var = 0;
-	int i;
-	for (i = 0; i < strlen(pass); i++)
-	{
-		var ^= pass[i];
-	}
-	return var;
-}
 void compress(FILE* in, FILE* out, int COMPRESSION_MODE, char* pass)
 {
 	fseek(in, 0, SEEK_SET); // do poczatku bo sprawdzalismy czy inicjaly w poprzednim ifie w mainie
@@ -569,7 +552,6 @@ void compress(FILE* in, FILE* out, int COMPRESSION_MODE, char* pass)
 	printf("Zakonczono kompresje!\n");
 }
 
-
 branch_t* read_header(FILE* fp, int* tree_size, int* tail, unsigned char* control_number, int* DECOMPRESSION_MODE)
 {
 	branch_t* tree = NULL;
@@ -579,7 +561,7 @@ branch_t* read_header(FILE* fp, int* tree_size, int* tail, unsigned char* contro
 	if (protected)
 	{
 		printf("Zaszyfrowany plik, prosze podac haslo \n");
-		scanf("%s", &pass);
+		scanf("%s", pass);
 	}
 	pass_var = get_pass_var(pass);
 	unsigned char compression_mode_indicator = read_byte_from_file(fp);
@@ -944,7 +926,6 @@ void decompress(FILE* in, FILE* out)
 	read_code(in, out, tree, tree_size, tail, control_number, DECOMPRESSION_MODE);
 
 }
-
 
 int main(int argc, char** argv)
 {

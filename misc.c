@@ -39,8 +39,6 @@ char* add_zeros_to_left(char* arr, int n)
 }
 
 
-
-
 int get_max_code_len(node_t* nodes, int unique_chars)
 {
 	min_t least_occuring = mini1_all(nodes, unique_chars);
@@ -127,7 +125,16 @@ char* dec_to_bin_string(unsigned char x, int n)
 	return binary;
 }
 
-
+unsigned char get_pass_var(char* pass)
+{
+	unsigned char var = 0;
+	int i;
+	for (i = 0; i < strlen(pass); i++)
+	{
+		var ^= pass[i];
+	}
+	return var;
+}
 
 int get_total_code_len(node_t* nodes, keyy_t* dict, int* count, int unique_chars)
 {
@@ -170,7 +177,6 @@ unsigned char xor_pass(char* pass)
 	}
 	return var;
 }
-
 
 void xor_char_pass(unsigned char* ch, unsigned char pass_var)
 {
