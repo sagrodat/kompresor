@@ -549,6 +549,9 @@ void compress(FILE* in, FILE* out, int COMPRESSION_MODE, char* pass)
 	
 	save_header(out, nodes, tail, fsize, right, COMPRESSION_MODE);
 	save_code(in, out, dict, fsize, unique_chars, COMPRESSION_MODE);
+	free(count);
+	free(nodes);
+	free(dict);
 	printf("Zakonczono kompresje!\n");
 }
 
@@ -924,11 +927,17 @@ void decompress(FILE* in, FILE* out)
 	}*/
 	//czytanie kodu!!! (pierwszy znak wczytujemy tutaj przed petla (nie wiem czemu))
 	read_code(in, out, tree, tree_size, tail, control_number, DECOMPRESSION_MODE);
-
+	free(tree);
 }
 
 int main(int argc, char** argv)
 {
+
+	if (argc == 1)
+	{
+		fprintf(stderr, "Brak argumentow, uzyj -h, aby otrzymac pomoc\n");
+		exit(0);
+	}
 
 	if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "h") || !strcmp(argv[1], "--help") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "help") || !strcmp(argv[1], "?") || !strcmp(argv[1], "-?"))
 	{
