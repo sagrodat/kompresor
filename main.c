@@ -903,7 +903,7 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 			//printf("\"\n");
 		}
 	}
-	print_decompression_success(control_number);
+	print_decompression_success(control_number,out);
 }
 void decompress(FILE* in, FILE* out)
 {
@@ -939,6 +939,12 @@ int main(int argc, char** argv)
 
 	FILE* in = open_file(argc, argv, 1, "rb"); // rb bo ten plik musi istniec
 	FILE* out = open_file(argc, argv, 2, "wb");
+
+	if (is_file_empty(in))
+	{
+		fprintf(stderr, "Nie mozna wykonac kompresji, plik jest pusty!\n");
+	}
+
 	int COMPRESSION_MODE; // domyslnie kompresujemy osemkowo
 	char compressed = 0;
 	show_info = 0;

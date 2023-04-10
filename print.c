@@ -46,15 +46,23 @@ void print_progress(char msg[], double current, double max_val)
 	}
 }
 
-void print_decompression_success(char control_number)
+void print_decompression_success(char control_number,FILE *out)
 {
 	if (control_number == 0)
 	{
-		printf("\nZdekompresowano plik!\n");
+		fseek(out, 0, SEEK_END);
+		int fsize = ftell(out);
+		if (fsize == 0 && protected)
+		{
+			printf("Podano nieprawidlowe haslo\n");
+		}
+		else
+		{
+			printf("\nZdekompresowano plik!\n");
+		}
 	}
 	else
 	{
-
 		if (protected)
 			printf("Podano nieprawidlowe haslo\n");
 		else

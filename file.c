@@ -14,6 +14,19 @@ unsigned char read_byte_from_file(FILE* fp)
 	return ch;
 }
 
+int is_file_empty(FILE* fp)
+{
+	int start_pos = ftell(fp);
+	fseek(fp, 0, SEEK_END);
+	int fsize = ftell(fp);
+	if (fsize == 0)
+		return 1;
+	else
+	{
+		fseek(fp, 0, start_pos);
+		return 0;
+	}
+}
 
 FILE* open_file(int argc, char** argv, int argv_num, char* flag)
 {

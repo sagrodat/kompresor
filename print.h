@@ -1,7 +1,7 @@
 #pragma once
 
 #include "typedefs.c"
-void print_decompression_success(char control_number);
+void print_decompression_success(char control_number,FILE*fp);
 
 void print_progress(char msg[], double current, double max_val);
 

@@ -9,6 +9,8 @@ FILE* open_file(int argc, char** argv, int argv_num, char* flag);
 
 void write_byte_to_file(FILE* fp, char x);
 
+int is_file_empty(FILE* fp);
+
 int valid_initials(FILE* fp);
 
 unsigned short read_two_bytes(FILE* fp);
