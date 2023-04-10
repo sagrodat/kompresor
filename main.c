@@ -930,7 +930,6 @@ void decompress(FILE* in, FILE* out)
 int main(int argc, char** argv)
 {
 
-
 	if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "h") || !strcmp(argv[1], "--help") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "help") || !strcmp(argv[1], "?") || !strcmp(argv[1], "-?"))
 	{
 		print_help();
@@ -940,10 +939,6 @@ int main(int argc, char** argv)
 	FILE* in = open_file(argc, argv, 1, "rb"); // rb bo ten plik musi istniec
 	FILE* out = open_file(argc, argv, 2, "wb");
 
-	if (is_file_empty(in))
-	{
-		fprintf(stderr, "Nie mozna wykonac kompresji, plik jest pusty!\n");
-	}
 
 	int COMPRESSION_MODE; // domyslnie kompresujemy osemkowo
 	char compressed = 0;

@@ -1,7 +1,5 @@
 #include "print.h"
-#include "globals.h"
-#include "misc.h"
-#include <stdio.h>
+
 
 void print_help()
 {

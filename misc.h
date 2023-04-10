@@ -2,6 +2,10 @@
 #include "typedefs.c"
 #include <stdio.h>
 #include <stdlib.h>
+#include "tree.h"
+#include "print.h"
+#include <string.h>
+#include <math.h>
 int get_unique_chars(int count[], int n);
 
 char* add_zeros_to_left(char* arr, int n);

@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "typedefs.c"
+#include "globals.h"
+#include "misc.h"
 
 unsigned char read_byte_from_file(FILE* fp);
 
@@ -9,7 +11,6 @@ FILE* open_file(int argc, char** argv, int argv_num, char* flag);
 
 void write_byte_to_file(FILE* fp, char x);
 
-int is_file_empty(FILE* fp);
 
 int valid_initials(FILE* fp);
 

@@ -1,5 +1,7 @@
 #pragma once
-
+#include "globals.h"
+#include "misc.h"
+#include <stdio.h>
 #include "typedefs.c"
 void print_decompression_success(char control_number,FILE*fp);
 

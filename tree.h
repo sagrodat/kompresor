@@ -1,5 +1,9 @@
 #pragma once
 #include "typedefs.c"
+#include "file.h"
+#include "misc.h"
+#include "print.h"
+#include "globals.h"
 #include <stdlib.h>
 #include <stdio.h>
 

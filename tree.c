@@ -1,8 +1,5 @@
 #include "tree.h"
-#include "file.h"
-#include "misc.h"
-#include "print.h"
-#include "globals.h"
+
 
 void prepare_nodes_arr(node_t** nodes, int count[], int n) // wypelnianie poczatkowych wartosci zmiennych dla kazdego elementu node_t
 {
