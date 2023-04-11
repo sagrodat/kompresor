@@ -28,7 +28,21 @@ void print_help()
 	exit(0);
 }
 
+void print_read_error()
+{
+	fprintf(stderr, "Blad, nie udalo sie wczytac znaku z pliku!\n");
+}
 
+void print_write_error()
+{
+	fprintf(stderr, "Blad, nie udalo sie zapisac znaku do pliku!\n");
+}
+
+void malloc_error(char msg[])
+{
+	fprintf(stderr,"Blad, nie udalo sie zarezerwowac pamieci na %s\n", msg);
+	exit(1);
+}
 void print_progress(char msg[], double current, double max_val)
 {
 	//printf("show info : %d\n", show_info);
@@ -52,19 +66,19 @@ void print_decompression_success(char control_number,FILE *out)
 		int fsize = ftell(out);
 		if (fsize == 0 && protected)
 		{
-			printf("Podano nieprawidlowe haslo\n");
+			fprintf(stderr,"Podano nieprawidlowe haslo\n");
 		}
 		else
 		{
-			printf("\nZdekompresowano plik!\n");
+			fprintf(stderr,"\nZdekompresowano plik!\n");
 		}
 	}
 	else
 	{
 		if (protected)
-			printf("Podano nieprawidlowe haslo\n");
+			fprintf(stderr, "Podano nieprawidlowe haslo\n");
 		else
-			printf("Blad, nie udalo sie zdekompresowac pliku!\n");
+			fprintf(stderr,"Blad, nie udalo sie zdekompresowac pliku!\n");
 	}
 }
 

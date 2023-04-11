@@ -1,8 +1,8 @@
-#pragma once
-#include "globals.h"
+#ifndef _PRINT_H
+#define _PRINT_H
+
 #include "misc.h"
-#include <stdio.h>
-#include "typedefs.c"
+#include "globals.h"
 void print_decompression_success(char control_number,FILE*fp);
 
 void print_progress(char msg[], double current, double max_val);
@@ -20,3 +20,12 @@ void print_help();
 void print_bin_as_bits(char* bin, int n, int bits);
 
 void print_short_as_bits(short x, int bits);
+
+void malloc_error(char msg[]);
+
+void print_read_error();
+
+void print_write_error();
+
+
+#endif

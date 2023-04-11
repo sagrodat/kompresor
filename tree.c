@@ -70,13 +70,13 @@ branch_t* read_tree_info(FILE* fp, int* tree_size, int COMPRESSION_MODE)
 	//zczytaj rozmiar tablicy tree i cofnij zczytanie bo to indeks pierwszego elementu tablicy tree
 	if (COMPRESSION_MODE == SIXTEEN_BIT)
 	{
-		tmp = read_three_bytes(fp);
+		tmp = read_three_bytes(fp, 1);
 		
 		fseek(fp, -3, SEEK_CUR);
 	}
 	else
 	{
-		tmp = read_two_bytes(fp);
+		tmp = read_two_bytes(fp, 1);
 		//printf("rozmiar drzewa z funkcji %d\n", tmp);
 		fseek(fp, -2, SEEK_CUR);
 	}
@@ -92,43 +92,43 @@ branch_t* read_tree_info(FILE* fp, int* tree_size, int COMPRESSION_MODE)
 		print_progress("Odtwarzanie drzewa : ", i, *tree_size - 1);
 		if (COMPRESSION_MODE == SIXTEEN_BIT)
 		{
-			tmp = read_three_bytes(fp);
+			tmp = read_three_bytes(fp, 1);;
 		}
 		else
 		{ 
-			tmp = read_two_bytes(fp);
+			tmp = read_two_bytes(fp, 1);
 			//printf("tmp : %d\n\n", tmp);
 
 		}
 
 		tree[i].node_id = tmp;
-		is_leaf = read_byte_from_file(fp);
+		is_leaf = read_byte_from_file(fp, 1);
 
 		if (!is_leaf)
 		{
 			if (COMPRESSION_MODE == SIXTEEN_BIT)
 			{
-				tree[i].left = read_three_bytes(fp);
-				tree[i].right = read_three_bytes(fp);
+				tree[i].left = read_three_bytes(fp, 1);
+				tree[i].right = read_three_bytes(fp, 1);
 
 			}
 			else
 			{
 				//printf("left\n");
-				tree[i].left = read_two_bytes(fp);
+				tree[i].left = read_two_bytes(fp, 1);
 				//printf("right\n");
-				tree[i].right = read_two_bytes(fp);
+				tree[i].right = read_two_bytes(fp, 1);
 			}
 		}
 		else if (is_leaf)
 		{
 			if (COMPRESSION_MODE == EIGHT_BIT)
 			{
-				tree[i].char_id = read_byte_from_file(fp);
+				tree[i].char_id = read_byte_from_file(fp, 1);
 			}
 			else
 			{
-				tree[i].char_id = read_two_bytes(fp);
+				tree[i].char_id = read_two_bytes(fp, 1);
 				//printf("wartosc bitowa : %d\n", tree[i].char_id);
 			}
 			tree[i].left = -1;

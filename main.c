@@ -1,21 +1,19 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
 
 #include "misc.h"
 #include "print.h"
 #include "file.h"
-#include "typedefs.c"
 #include "tree.h"
 #include "getopt.h"
-#include "globals.h"
 
 int* count_occurences(FILE* fp, int fsize, int dict_size)
 {
 	int* count = malloc(sizeof(int) * dict_size);
+	if (count == NULL)
+	{
+		malloc_error("tablice uzywana do zliczania wystapien ciagow bitow");
+	}
 	short ch;
 	int i;
 	for (i = 0; i < dict_size; i++)
@@ -28,7 +26,7 @@ int* count_occurences(FILE* fp, int fsize, int dict_size)
 		for (i = 0; i < fsize; i++)
 		{
 			print_progress("Zliczanie wystapien ciagow bitow : ", i, fsize - 1);
-			ch = fgetc(fp);
+			ch = read_byte_from_file(fp, 0);
 			count[(unsigned char)ch] += 1;
 		}
 	}
@@ -45,7 +43,7 @@ int* count_occurences(FILE* fp, int fsize, int dict_size)
 
 			if (i % 2 == 0)
 			{
-				ch = fgetc(fp);
+				ch = read_byte_from_file(fp, 0);
 				//printf("%c\n", ch);
 			}
 			if (i % 2 == 0) //zapisujemy lewa polowe znaku
@@ -88,13 +86,13 @@ int* count_occurences(FILE* fp, int fsize, int dict_size)
 		{
 			print_progress("Zliczanie wystapien ciagow bitow : ", j, fsize / 2 - 1);
 
-			key = read_two_bytes(fp);
+			key = read_two_bytes(fp,0);
 			//printf("key %u\n", (unsigned int)key);
 			count[(unsigned short)key]++;
 		}
 		if (fsize % 2 == 1)
 		{
-			key = fgetc(fp);
+			key = read_byte_from_file(fp, 0);
 			count[(unsigned short)key] += 1;
 		}
 	}
@@ -109,6 +107,10 @@ keyy_t* create_dict(node_t* nodes, int unique_chars, int MAX_VAL)
 {
 	int i;
 	keyy_t* dict = malloc(sizeof * dict * MAX_VAL);
+	if (dict == NULL)
+	{
+		malloc_error("tablice zawierajaca klucze slownika");
+	}
 	//znajdywanie wielkosci najdluzszego kodu aby ogolnei zarezerwowac mniejsza ilosc miejsca na kody
 	//sprawdzamy jak dlugi jest kod dla znaku ktory wystepuje najmniej razy, to bedzie max dlugosc kodu
 	// 
@@ -126,6 +128,10 @@ keyy_t* create_dict(node_t* nodes, int unique_chars, int MAX_VAL)
 		short key = nodes[i].char_id;
 		//printf("key : %d\n", key);
 		dict[(unsigned short)key].code = malloc(sizeof(char) * max_code_len);
+		if (dict[(unsigned short)key].code == NULL)
+		{
+			malloc_error("zero jedynkowy kod huffmana dla danego klucza w slowniku");
+		}
 
 		//poczatkowo wypelnianie kodu pustymi znakami
 		fill_char_arr(&(dict[(unsigned short)key].code), max_code_len, '\0');
@@ -160,11 +166,12 @@ void save_header(FILE* fp, node_t* nodes, char tail, int fsize, int right, int C
 {
 	save_initials(fp);
 
-	fwrite(&protected, sizeof(char), sizeof(protected), fp);
+	write_byte_to_file(fp, protected, 0);
+	//protected = 0;
 
 	char compression_mode_indicator = (char)(log2f(COMPRESSION_MODE));
-	write_byte_to_file(fp,compression_mode_indicator);
-	write_byte_to_file(fp, tail);
+	write_byte_to_file(fp,compression_mode_indicator,1);
+	write_byte_to_file(fp, tail,1);
 
 	if (COMPRESSION_MODE == EIGHT_BIT)
 	{
@@ -175,20 +182,20 @@ void save_header(FILE* fp, node_t* nodes, char tail, int fsize, int right, int C
 		int i;
 		for (i = right - 1; i >= 0; i--)
 		{
-			write_two_bytes_to_file(fp, i);
+			write_two_bytes_to_file(fp, i,1);
 
 			char is_leaf = nodes[i].left == -1 ? 1 : 0; // sprawdzamy czy ma jakiekolwiek dziecko
-			write_byte_to_file(fp, is_leaf);
+			write_byte_to_file(fp, is_leaf,1);
 
 			if (is_leaf)//znak odpowiadajacy lisciowi
 			{
 				char ch = nodes[i].char_id;
-				write_byte_to_file(fp, ch);
+				write_byte_to_file(fp, ch, 1);
 			}
 			else if (!is_leaf)//kolejne dzieci
 			{
-				write_two_bytes_to_file(fp, nodes[i].left);
-				write_two_bytes_to_file(fp, nodes[i].right);
+				write_two_bytes_to_file(fp, nodes[i].left, 1);
+				write_two_bytes_to_file(fp, nodes[i].right, 1);
 			}
 		}
 	}
@@ -198,19 +205,19 @@ void save_header(FILE* fp, node_t* nodes, char tail, int fsize, int right, int C
 		int i;
 		for (i = right - 1; i >= 0; i--)
 		{
-			write_two_bytes_to_file(fp, i);
+			write_two_bytes_to_file(fp, i, 1);
 
 			char is_leaf = nodes[i].left == -1 ? 1 : 0;
-			write_byte_to_file(fp, is_leaf);
+			write_byte_to_file(fp, is_leaf, 1);
 
 			if (is_leaf)
 			{
-				write_two_bytes_to_file(fp, nodes[i].char_id);
+				write_two_bytes_to_file(fp, nodes[i].char_id, 1);
 			}
 			else if (!is_leaf)
 			{
-				write_two_bytes_to_file(fp, nodes[i].left);
-				write_two_bytes_to_file(fp, nodes[i].right);
+				write_two_bytes_to_file(fp, nodes[i].left, 1);
+				write_two_bytes_to_file(fp, nodes[i].right, 1);
 			}
 		}
 	}
@@ -219,19 +226,19 @@ void save_header(FILE* fp, node_t* nodes, char tail, int fsize, int right, int C
 		int i;
 		for (i = right - 1; i >= 0; i--)
 		{
-			write_three_bytes_to_file(fp, i);
+			write_three_bytes_to_file(fp, i, 1);
 
 			char is_leaf = nodes[i].left == -1 ? 1 : 0;
-			write_byte_to_file(fp, is_leaf);
+			write_byte_to_file(fp, is_leaf, 1);
 
 			if (is_leaf)
 			{
-				write_two_bytes_to_file(fp, nodes[i].char_id);
+				write_two_bytes_to_file(fp, nodes[i].char_id, 1);
 			}
 			else if (!is_leaf)
 			{
-				write_three_bytes_to_file(fp, nodes[i].left);
-				write_three_bytes_to_file(fp, nodes[i].right);
+				write_three_bytes_to_file(fp, nodes[i].left, 1);
+				write_three_bytes_to_file(fp, nodes[i].right, 1);
 			}
 		}
 	}
@@ -258,7 +265,7 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 			print_progress("Zapisywanie kodu : ", i, fsize - 1);
 
 			//wczytaj znak i znajdz kod char
-			char ch = fgetc(in);
+			unsigned char ch = read_byte_from_file(in, 0);
 			//printf("Znak dla ktorego szukamy %c\n", ch);
 			//printf("i : %d\n", i);
 			////printowanie czy xor dziala
@@ -299,7 +306,7 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 
 					//przesun w lewo, zapisz lewy bajt, wyzeruj, przesun w prawo
 					u.buf = u.buf << (16 - counter);
-					write_byte_to_file(out, u.D.B);
+					write_byte_to_file(out, u.D.B,1);
 					//printf("zapisuje %d - ", (u.B));
 					//print_bin(dec_to_bin_string(u.B, get_bin_len(u.B)), get_bin_len(u.B));
 
@@ -315,12 +322,12 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 		if (counter != 0)
 		{
 			//zapisz resztke 
-			write_byte_to_file(out, u.D.A);
+			write_byte_to_file(out, u.D.A,1);
 		}
 
 		//printf("zapisuje %d\n", (u.A));
 		//zapisz kontrolna sume
-		write_byte_to_file(out, control_number);
+		write_byte_to_file(out, control_number,1);
 		//printf("kontrol save %d\n", control_number);
 		fclose(out);
 	}
@@ -347,7 +354,7 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 
 			if (i % 2 == 0)
 			{
-				ch = fgetc(in);
+				ch = read_byte_from_file(in, 0);
 				control_number = control_number ^ ch;
 
 				//	printf("\ncontrol_nubmer : %d\n", control_number);
@@ -392,7 +399,7 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 
 						//	printf("\n");
 						v.buf = v.buf << (16 - counter);
-						write_byte_to_file(out, v.D.B);
+						write_byte_to_file(out, v.D.B,1);
 						//printf("saved %d\n", v.B);
 						v.D.B = 0;
 						v.buf = v.buf >> (16 - counter);
@@ -409,10 +416,10 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 		if (counter != 0)
 		{
 			//printf("ogonek jaki zostal : %d\n", v.A);
-			write_byte_to_file(out , v.D.A);
+			write_byte_to_file(out , v.D.A,1);
 		}
 		//printf("kontrol %d\n", control_number);
-		write_byte_to_file(out, control_number);
+		write_byte_to_file(out, control_number, 1);
 		fclose(out);
 
 	}
@@ -436,14 +443,14 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 			//wczytaj znak i znajdz kod char
 			if (i == iter - 1 && iter == (fsize / 2) + 1)
 			{
-				key.buf = fgetc(in);
+				key.buf = read_byte_from_file(in, 0);
 				control_number = control_number ^ key.buf;
 			}
 			else
 			{
 				//key.buf = read_two_bytes(in);
-				key.D.B = fgetc(in);
-				key.D.A = fgetc(in);
+				key.D.B = read_byte_from_file(in, 0);
+				key.D.A = read_byte_from_file(in, 0);
 				//printf("Wczytano %d %d\n", (unsigned char)key.D.B, (unsigned char)key.D.A);
 				control_number = control_number ^ key.D.A;
 				control_number = control_number ^ key.D.B;
@@ -477,7 +484,7 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 
 					//przesun w lewo, zapisz lewy bajt, wyzeruj, przesun w prawo
 					u.buf = u.buf << (16 - counter);
-					write_byte_to_file(out, u.D.B);
+					write_byte_to_file(out, u.D.B,1);
 
 					//printf("zapisuje %u - ", (unsigned int)(u.B));
 					//print_bin(dec_to_bin_string(u.B, get_bin_len(u.B)), get_bin_len(u.B));
@@ -495,19 +502,19 @@ void save_code(FILE* in, FILE* out, keyy_t* dict, int fsize, int unique_chars, i
 		if (counter != 0)
 		{
 			//zapisz resztke 
-			write_byte_to_file(out, u.D.A);
+			write_byte_to_file(out, u.D.A, 1);
 			//	printf("zapisuje %d - \n", (u.A));
 			//print_bin(dec_to_bin_string(u.A, get_bin_len(u.A)), get_bin_len(u.A));
 		}
 		//zapisz kontrolna sume
-		write_byte_to_file(out, control_number);
+		write_byte_to_file(out, control_number, 1);
 		//printf("kontrol save %d\n", control_number);
 		fclose(out);
 	}
 
 
 }
-void compress(FILE* in, FILE* out, int COMPRESSION_MODE, char* pass)
+void compress(FILE* in, FILE* out, int compression_mode, char* pass)
 {
 	fseek(in, 0, SEEK_SET); // do poczatku bo sprawdzalismy czy inicjaly w poprzednim ifie w mainie
 
@@ -515,27 +522,27 @@ void compress(FILE* in, FILE* out, int COMPRESSION_MODE, char* pass)
 
 	int* count = NULL;
 	int fsize = get_file_size(in);
-	count = count_occurences(in, fsize, COMPRESSION_MODE);
+	count = count_occurences(in, fsize, compression_mode);
 
 	/////////////////////////////////// DRZEWO HUFFMANA /////////////////////////////////////////
 
 	node_t* nodes = NULL;
 	int right = 0;
-	int unique_chars = get_unique_chars(count, COMPRESSION_MODE);
+	int unique_chars = get_unique_chars(count, compression_mode);
 	if (unique_chars < 1)
 	{
 		fprintf(stderr, "Pusty plik! Nie mozna skompresowac\n");
-		exit(0);
+		exit(1);
 	}
-	nodes = create_tree(count, &right, unique_chars, COMPRESSION_MODE);
+	nodes = create_tree(count, &right, unique_chars, compression_mode);
 
 	///////////////////////////////////     S£OWNIK     /////////////////////////////////////////
 
 	keyy_t* dict = NULL;
-	dict = create_dict(nodes, unique_chars, COMPRESSION_MODE);
+	dict = create_dict(nodes, unique_chars, compression_mode);
 
 	///////////////////////////////////      ZAPISYWANIE SKOMPRESOWANEGO TEKSTU      /////////////////////////////////////
-	char tail = get_tail(nodes, dict, count, unique_chars, COMPRESSION_MODE);
+	char tail = get_tail(nodes, dict, count, unique_chars, compression_mode);
 
 	if (show_info)
 		printf("Ilosc znakow w pliku : %d\n", get_file_size(in));
@@ -547,53 +554,66 @@ void compress(FILE* in, FILE* out, int COMPRESSION_MODE, char* pass)
 		pass_var = get_pass_var(pass);
 	}
 	
-	save_header(out, nodes, tail, fsize, right, COMPRESSION_MODE);
-	save_code(in, out, dict, fsize, unique_chars, COMPRESSION_MODE);
+	save_header(out, nodes, tail, fsize, right, compression_mode);
+	save_code(in, out, dict, fsize, unique_chars, compression_mode);
 	free(count);
 	free(nodes);
 	free(dict);
 	printf("Zakonczono kompresje!\n");
 }
 
-branch_t* read_header(FILE* fp, int* tree_size, int* tail, unsigned char* control_number, int* DECOMPRESSION_MODE)
+branch_t* read_header(FILE* fp, int* tree_size, int* tail, unsigned char* control_number, int* decompression_mode)
 {
 	branch_t* tree = NULL;
 
-	protected = fgetc(fp);
-	char pass[50];
+	protected = read_byte_from_file(fp, 0);
+	char* pass = NULL;
 	if (protected)
 	{
 		printf("Zaszyfrowany plik, prosze podac haslo \n");
-		scanf("%s", pass);
+
+		pass = malloc(sizeof(char) * MAX_PASS_LEN);
+
+		if (fgets(pass, MAX_PASS_LEN, stdin) == NULL) 
+		{
+			printf("Blad przy wczytywaniu hasla\n");
+			exit(1);
+		}
+
+		if (strlen(pass) > 0 && pass[strlen(pass) - 1] == '\n') 
+		{
+			pass[strlen(pass) - 1] = '\0';
+		}
+		pass_var = get_pass_var(pass);
 	}
-	pass_var = get_pass_var(pass);
-	unsigned char compression_mode_indicator = read_byte_from_file(fp);
-	*DECOMPRESSION_MODE = (int)pow(2, compression_mode_indicator);
+	
+	unsigned char compression_mode_indicator = read_byte_from_file(fp,1);
+	*decompression_mode = (int)pow(2, compression_mode_indicator);
 	//printf("COMPRESSION MODE  %d\n", *DECOMPRESSION_MODE);
-	if (*DECOMPRESSION_MODE == EIGHT_BIT)
+	if (*decompression_mode == EIGHT_BIT)
 	{
-		*tail = read_byte_from_file(fp); // wczytanie ogonka ( 3 znak)
+		*tail = read_byte_from_file(fp, 1); // wczytanie ogonka ( 3 znak)
 
 		//zczytanie control_number z konca
 		*control_number = get_control_number(fp);
 
-		tree = read_tree_info(fp, tree_size, *DECOMPRESSION_MODE);
+		tree = read_tree_info(fp, tree_size, *decompression_mode);
 	}
-	else if (*DECOMPRESSION_MODE == TWELVE_BIT)
+	else if (*decompression_mode == TWELVE_BIT)
 	{
-		*tail = read_byte_from_file(fp);
+		*tail = read_byte_from_file(fp, 1);
 
 		*control_number = get_control_number(fp);
 
-		tree = read_tree_info(fp, tree_size, *DECOMPRESSION_MODE);
+		tree = read_tree_info(fp, tree_size, *decompression_mode);
 	}
-	else if (*DECOMPRESSION_MODE == SIXTEEN_BIT)
+	else if (*decompression_mode == SIXTEEN_BIT)
 	{
-		*tail = read_byte_from_file(fp);
+		*tail = read_byte_from_file(fp, 1);
 
 		*control_number = get_control_number(fp);
 
-		tree = read_tree_info(fp, tree_size, *DECOMPRESSION_MODE);
+		tree = read_tree_info(fp, tree_size, *decompression_mode);
 	}
 
 	//obroc tablice aby indeksy dzieci sie zgadzaly z indeksami w tablicy
@@ -620,7 +640,7 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 		{
 			print_progress("Czytanie kodow huffmana : ", i, chars_to_read - 1);
 
-			ch = read_byte_from_file(fp);
+			ch = read_byte_from_file(fp, 1);
 			//zmiana znaku ch na binarny zapis
 			char* ch_bin = dec_to_bin_string((int)ch, get_bin_len((unsigned char)ch));
 			//uzupelnianie zerami z lewej
@@ -663,7 +683,7 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 					//wypisz znak
 					//printf("%c", tmp.char_id);
 					unsigned char save = tmp.char_id;
-					fwrite(&save, sizeof(char), sizeof(save), out);
+					write_byte_to_file(out, save, 0);
 					control_number = control_number ^ save;
 					//printf("\nkontrol %d\n", control_number);
 					//cofnijmy sie do korzenia, zeby w nastepnej iteracji zaczac chodzic po drzewie od niego (ROOT)
@@ -696,7 +716,7 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 
 		for (i = 0; i < chars_to_read; i++)
 		{
-			ch = read_byte_from_file(fp);
+			ch = read_byte_from_file(fp,1);
 			//zmiana znaku ch na binarny zapis
 			char* ch_bin = dec_to_bin_string((unsigned char)ch, get_bin_len((unsigned char)ch));
 			//uzupelnianie zerami z lewej
@@ -743,7 +763,7 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 							u.buf += tmp.char_id;
 							//print_short_as_bits(u.buf, 16);
 							//printf("%c", u.A);
-							fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+							write_byte_to_file(out, u.D.A, 0);
 							control_number = control_number ^ u.D.A;
 							//	printf("\ncontrol_nubmer : %d\n", control_number);
 							cnt++;
@@ -756,7 +776,7 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 							u.buf = u.buf << 4;
 							//print_short_as_bits(u.buf, 16);
 						 //   printf("%c", u.B);
-							fwrite(&u.D.B, sizeof(char), sizeof(u.D.B), out);
+							write_byte_to_file(out, u.D.B, 0);
 							control_number = control_number ^ u.D.B;
 							///		printf("\ncontrol_nubmer : %d\n", control_number);
 							u.D.B = 0;
@@ -776,7 +796,7 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 								u.buf = u.buf << 4;
 								u.buf += tmp.char_id;
 								//	printf("%c", u.A);
-								fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+								write_byte_to_file(out, u.D.A, 0);
 								control_number = control_number ^ u.D.A;
 							}
 							else
@@ -784,9 +804,9 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 								u.buf = u.buf << 12;
 								u.buf += tmp.char_id;
 								//	printf("%c", u.B);
-								fwrite(&u.D.B, sizeof(char), sizeof(u.D.B), out);
+								write_byte_to_file(out, u.D.B, 0);
 								//	printf("%c", u.A);
-								fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+								write_byte_to_file(out, u.D.A, 0);
 
 
 								control_number = control_number ^ u.D.B;
@@ -808,11 +828,11 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 							u.buf += tmp.char_id;
 							//print_short_as_bits(u.buf, 16);
 							//printf("%c", u.B);
-							fwrite(&u.D.B, sizeof(char), sizeof(u.D.B), out);
+							write_byte_to_file(out, u.D.B, 0);
 							control_number = control_number ^ u.D.B;
 							//	printf("\ncontrol_nubmer : %d\n", control_number);
 							//printf("%c", u.A);
-							fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+							write_byte_to_file(out, u.D.A, 0);
 							control_number = control_number ^ u.D.A;
 							//	printf("\ncontrol_nubmer : %d\n", control_number);
 							u.buf = 0;
@@ -844,7 +864,7 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 		for (i = 0; i < chars_to_read; i++)
 		{
 			print_progress("Czytanie kodow huffmana : ", i, chars_to_read - 1);
-			ch = read_byte_from_file(fp);
+			ch = read_byte_from_file(fp,1);
 			char* ch_bin = dec_to_bin_string((unsigned char)ch, get_bin_len((unsigned char)ch));
 			ch_bin = add_zeros_to_left(ch_bin, get_bin_len((unsigned char)ch));
 
@@ -870,8 +890,8 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 					if (tmp.char_id > 255)
 					{
 						//printf("%c%c", u.B, u.A);
-						fwrite(&u.D.B, sizeof(char), sizeof(u.D.B), out);
-						fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+						write_byte_to_file(out, u.D.B, 0);
+						write_byte_to_file(out, u.D.A, 0);
 						control_number = control_number ^ u.D.B;
 						control_number = control_number ^ u.D.A;
 					}
@@ -883,13 +903,13 @@ void read_code(FILE* fp, FILE* out, branch_t* tree, int tree_size, int tail, cha
 						//albo jest 8 bitowy znak na lisciu (gdy plik wejsciowy ma nieparzysta ilosc znakowy) 
 						if (i == chars_to_read - 1) // bo bedzie on zapisany w ostatnim znaku skompresowanego pliku
 						{
-							fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+							write_byte_to_file(out, u.D.A, 0);
 							control_number = control_number ^ u.D.A;
 						}
 						else //albo lewy fragment shorta jest zerowy czyli znak na lisciu to NULL
 						{
-							fwrite(&u.D.B, sizeof(char), sizeof(u.D.B), out);
-							fwrite(&u.D.A, sizeof(char), sizeof(u.D.A), out);
+							write_byte_to_file(out, u.D.B, 0);
+							write_byte_to_file(out, u.D.A, 0);
 							control_number = control_number ^ u.D.B;
 							control_number = control_number ^ u.D.A;
 						}
@@ -936,7 +956,7 @@ int main(int argc, char** argv)
 	if (argc == 1)
 	{
 		fprintf(stderr, "Brak argumentow, uzyj -h, aby otrzymac pomoc\n");
-		exit(0);
+		exit(1);
 	}
 
 	if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "h") || !strcmp(argv[1], "--help") || !strcmp(argv[1], "-help") || !strcmp(argv[1], "help") || !strcmp(argv[1], "?") || !strcmp(argv[1], "-?"))
@@ -1034,8 +1054,6 @@ int main(int argc, char** argv)
 		compress(in, out, EIGHT_BIT, pass);
 	}
 	fclose(in);
-	fclose(out);
-	free(pass);
 
 	return 0;
 }

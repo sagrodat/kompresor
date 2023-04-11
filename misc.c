@@ -21,6 +21,10 @@ int get_unique_chars(int count[], int n) // funkcja zliczajaca ilosc unikalnych 
 char* add_zeros_to_left(char* arr, int n)
 {
 	char* new_arr = malloc(sizeof(char) * 8);
+	if (new_arr == NULL)
+	{
+		malloc_error("tablice znakow w funkcji pomocniczej add_zeros_to_lef()");
+	}
 	int i;
 	for (i = 0; i < 8 - n; i++)
 	{
@@ -101,6 +105,10 @@ char* dec_to_bin_string(unsigned char x, int n)
 {
 
 	char* binary = malloc(sizeof(char) * n);
+	if (binary == NULL)
+	{
+		malloc_error("tablice znakow tworzaca zapis binarny liczby dziesietnej (funkcja dec_to_bin_string())");
+	}
 	int index = 0;
 	while (x > 0)
 	{
@@ -124,13 +132,23 @@ char* dec_to_bin_string(unsigned char x, int n)
 
 unsigned char get_pass_var(char* pass)
 {
-	unsigned char var = 0;
-	int i;
-	for (i = 0; i < strlen(pass); i++)
+	if (pass == NULL)
 	{
-		var ^= pass[i];
+		fprintf(stderr,"Blad przy wczytywaniu hasla\n");
+		exit(1);
 	}
-	return var;
+	else
+	{
+		unsigned char var = 0;
+		int i;
+
+		for (i = 0; i < strlen(pass); i++)
+		{
+			var ^= pass[i];
+		}
+		return var;
+	}
+	
 }
 
 int get_total_code_len(node_t* nodes, keyy_t* dict, int* count, int unique_chars)
