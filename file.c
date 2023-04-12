@@ -56,13 +56,7 @@ int valid_initials(FILE* fp)
 			ch = read_byte_from_file(fp, 0);
 			if (ch == 'K')
 			{
-				ch = read_byte_from_file(fp, 0);
-				//printf("ch : %d\n", ch);
-				fseek(fp, -1, SEEK_CUR);
-				if (ch == 32 || ch == 0 || ch == 1)
-				{
-					return 1;
-				}
+				return 1;
 			}
 		}
 	}
