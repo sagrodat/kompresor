@@ -31,11 +31,13 @@ void print_help()
 void print_read_error()
 {
 	fprintf(stderr, "Blad, nie udalo sie wczytac znaku z pliku!\n");
+	exit(1);
 }
 
 void print_write_error()
 {
 	fprintf(stderr, "Blad, nie udalo sie zapisac znaku do pliku!\n");
+	exit(1);
 }
 
 void malloc_error(char msg[])
@@ -76,9 +78,17 @@ void print_decompression_success(char control_number,FILE *out)
 	else
 	{
 		if (protected)
+		{
 			fprintf(stderr, "Podano nieprawidlowe haslo\n");
+			exit(1);
+		}
+			
 		else
-			fprintf(stderr,"Blad, nie udalo sie zdekompresowac pliku!\n");
+		{
+			fprintf(stderr, "Blad, nie udalo sie zdekompresowac pliku!\n");
+			exit(1);
+		}
+			
 	}
 }
 
@@ -117,6 +127,7 @@ void print_bin_as_bits(char* bin, int n, int bits)
 	if (n > bits)
 	{
 		printf("BLAD PRINT_BIN_AS_BITS\n");
+		exit(1);
 	}
 	int i;
 	for (i = 0; i < (bits - n); i++)
