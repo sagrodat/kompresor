@@ -47,7 +47,7 @@ FILE* open_file(int argc, char** argv, int argv_num, char* flag)
 int valid_initials(FILE* fp)
 {
 	int fsize = get_file_size(fp);
-	if (fsize > 3)
+	if (fsize > 8)
 	{
 		//sprawdzanie czy sa poprawne INICJALY
 		unsigned char ch = read_byte_from_file(fp, 0);
