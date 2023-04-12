@@ -32,8 +32,6 @@ int get_total_code_len(node_t* nodes, keyy_t* dict, int* count, int unique_chars
 
 int get_tail(node_t* nodes, keyy_t* dict, int* count, int unique_chars, int COMPRESS_MODE);
 
-unsigned char xor_pass(char* pass);
-
 void xor_char_pass(unsigned char* ch, unsigned char pass_var);
 
 #endif
